@@ -1,0 +1,294 @@
+name: Documentation
+
+on:
+
+  push:
+    branches:
+      - main
+    paths:
+      - include/**
+      - src/**
+      - docs/**
+      - .github/workflows/documentation.yml
+
+jobs:
+
+  draw-nopencil:
+    name: Create PNG images using PyVista (nopencil.png)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dimension: [2, 3]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Setup PyVista without XWindows
+        uses: pyvista/setup-headless-display-action@main
+      - name: Install python libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyvista matplotlib
+      - name: Render images
+        run: |
+          python docs/source/data/${{ matrix.dimension }}d/decomposition.py
+          mv nopencil.png image.png
+      - name: Upload images
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ matrix.dimension }}d-nopencil
+          path: image.png
+
+  draw-pencils-2d:
+    name: Create PNG images using PyVista (2D pencils)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pencil: ["x1", "y1"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Setup PyVista without XWindows
+        uses: pyvista/setup-headless-display-action@main
+      - name: Install python libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyvista matplotlib
+      - name: Render images
+        run: |
+          python docs/source/data/2d/transpose.py ${{ matrix.pencil }}
+          mv ${{ matrix.pencil }}pencil.png image.png
+      - name: Upload images
+        uses: actions/upload-artifact@main
+        with:
+          name: 2d-${{ matrix.pencil }}pencil
+          path: image.png
+
+  draw-pencils-3d:
+    name: Create PNG images using PyVista (3D pencils)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pencil: ["x1", "y1", "z1", "x2", "y2", "z2"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Setup PyVista without XWindows
+        uses: pyvista/setup-headless-display-action@main
+      - name: Install python libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyvista matplotlib
+      - name: Render images
+        run: |
+          python docs/source/data/3d/transpose.py ${{ matrix.pencil }}
+          mv ${{ matrix.pencil }}pencil.png image.png
+      - name: Upload images
+        uses: actions/upload-artifact@main
+        with:
+          name: 3d-${{ matrix.pencil }}pencil
+          path: image.png
+
+  merge-images-2d:
+    name: Merge images (2D)
+    runs-on: ubuntu-latest
+    needs: [draw-nopencil, draw-pencils-2d]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Download 2D image
+        uses: actions/download-artifact@main
+        with:
+          name: 2d-nopencil
+          path: 2d-nopencil
+      - name: Download 2D image
+        uses: actions/download-artifact@main
+        with:
+          name: 2d-x1pencil
+          path: 2d-x1pencil
+      - name: Download 2D image
+        uses: actions/download-artifact@main
+        with:
+          name: 2d-y1pencil
+          path: 2d-y1pencil
+      - name: Move images to desired place
+        run: |
+          mv 2d-nopencil/image.png docs/source/data/2d/nopencil.png
+          mv 2d-x1pencil/image.png docs/source/data/2d/x1pencil.png
+          mv 2d-y1pencil/image.png docs/source/data/2d/y1pencil.png
+      - name: Check available font
+        run: |
+          sudo fc-list
+      - name: Install python libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install Pillow
+      - name: Merge images
+        run: |
+          cd docs/source/data/2d/
+          python merge.py
+          mkdir merged
+          mv default.png merged/
+          mv transpose.png merged/
+      - name: Upload merged images
+        uses: actions/upload-artifact@main
+        with:
+          name: 2d-merged
+          path: docs/source/data/2d/merged
+
+  merge-images-3d:
+    name: Merge images (3D)
+    runs-on: ubuntu-latest
+    needs: [draw-nopencil, draw-pencils-3d]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      #####
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-nopencil
+          path: 3d-nopencil
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-x1pencil
+          path: 3d-x1pencil
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-y1pencil
+          path: 3d-y1pencil
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-z1pencil
+          path: 3d-z1pencil
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-x2pencil
+          path: 3d-x2pencil
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-y2pencil
+          path: 3d-y2pencil
+      - name: Download 3D image
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-z2pencil
+          path: 3d-z2pencil
+      #####
+      - name: Move images to desired place
+        run: |
+          mv 3d-nopencil/image.png docs/source/data/3d/nopencil.png
+          mv 3d-x1pencil/image.png docs/source/data/3d/x1pencil.png
+          mv 3d-y1pencil/image.png docs/source/data/3d/y1pencil.png
+          mv 3d-z1pencil/image.png docs/source/data/3d/z1pencil.png
+          mv 3d-x2pencil/image.png docs/source/data/3d/x2pencil.png
+          mv 3d-y2pencil/image.png docs/source/data/3d/y2pencil.png
+          mv 3d-z2pencil/image.png docs/source/data/3d/z2pencil.png
+      - name: Check available font
+        run: |
+          sudo fc-list
+      - name: Install python libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install Pillow
+      - name: Merge images
+        run: |
+          cd docs/source/data/3d/
+          python merge.py
+          mkdir merged
+          mv default.png merged/
+          mv transpose.png merged/
+      - name: Upload merged images
+        uses: actions/upload-artifact@main
+        with:
+          name: 3d-merged
+          path: docs/source/data/3d/merged
+
+  build-doc:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    needs: [merge-images-2d, merge-images-3d]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Download 2d images
+        uses: actions/download-artifact@main
+        with:
+          name: 2d-merged
+          path: 2d-merged
+      - name: Download 3d images
+        uses: actions/download-artifact@main
+        with:
+          name: 3d-merged
+          path: 3d-merged
+      - name: Move images to desired place
+        run: |
+          mv 2d-merged/*.png docs/source/data/2d/
+          mv 3d-merged/*.png docs/source/data/3d/
+      - name: Build documentation using Sphinx
+        run: |
+          echo "cd docs && make html" > sphinx.sh
+          docker run \
+            --rm \
+            --volume ${PWD}:/project \
+            --workdir /project \
+            sphinxdoc/sphinx:latest \
+            /bin/bash sphinx.sh
+      - name: Upload HTML artifacts
+        uses: actions/upload-artifact@main
+        with:
+          name: DocHTML
+          path: docs/build/html
+
+  deploy-doc:
+    name: Deploy documentation
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: "pages"
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: [build-doc]
+    steps:
+      - name: Download HTML artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: DocHTML
+          path: docs/build/html
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@main
+      - name: Upload HTML
+        uses: actions/upload-pages-artifact@main
+        with:
+          path: docs/build/html
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@main
+

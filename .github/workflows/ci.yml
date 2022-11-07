@@ -1,0 +1,152 @@
+name: CI
+
+on:
+
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - include/**
+      - .github/workflows/ci.yml
+
+jobs:
+
+  test-small-2d:
+    name: Test matrix transpose for a small-sized 2D domain
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nprocs: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update && \
+          sudo apt-get -y install make libopenmpi-dev
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Compile
+        run: |
+          make all
+      - name: Run case
+        run: |
+          mpirun -n ${{ matrix.nprocs }} --oversubscribe ./a.out 9 11
+
+  test-middle-2d:
+    name: Test matrix transpose for a middle-sized 2D domain
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nprocs: [1, 2, 3, 4, 5, 6, 8, 16]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update && \
+          sudo apt-get -y install make libopenmpi-dev
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Compile
+        run: |
+          make all
+      - name: Run case
+        run: |
+          mpirun -n ${{ matrix.nprocs }} --oversubscribe ./a.out 127 255
+
+  test-large-2d:
+    name: Test matrix transpose for a large-sized 2D domain
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nprocs: [1, 2, 4, 8, 16, 32, 64, 128]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update && \
+          sudo apt-get -y install make libopenmpi-dev
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Compile
+        run: |
+          make all
+      - name: Run case
+        run: |
+          mpirun -n ${{ matrix.nprocs }} --oversubscribe ./a.out 1024 2048
+
+  test-small-3d:
+    name: Test matrix transpose for a small-sized 3D domain
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nprocs: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update && \
+          sudo apt-get -y install make libopenmpi-dev
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Compile
+        run: |
+          make all
+      - name: Run case
+        run: |
+          mpirun -n ${{ matrix.nprocs }} --oversubscribe ./a.out 9 11 14
+
+  test-middle-3d:
+    name: Test matrix transpose for a middle-sized 3D domain
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nprocs: [1, 2, 3, 4, 5, 6, 8, 16]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update && \
+          sudo apt-get -y install make libopenmpi-dev
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Compile
+        run: |
+          make all
+      - name: Run case
+        run: |
+          mpirun -n ${{ matrix.nprocs }} --oversubscribe ./a.out 31 95 63
+
+  test-large-3d:
+    name: Test matrix transpose for a large-sized 3D domain
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nprocs: [1, 2, 4, 8, 16, 32, 64, 128]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update && \
+          sudo apt-get -y install make libopenmpi-dev
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          repository: 'NaokiHori/SimpleDecomp'
+          ref: ${{ github.ref_name }}
+      - name: Compile
+        run: |
+          make all
+      - name: Run case
+        run: |
+          mpirun -n ${{ matrix.nprocs }} --oversubscribe ./a.out 512 512 512
+
