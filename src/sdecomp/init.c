@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include <mpi.h>
 #include "sdecomp.h"
@@ -78,18 +79,32 @@ sdecomp_t *sdecomp_init(const MPI_Comm comm_default, const int ndims, const int 
     int nprocs;
     MPI_Comm_size(comm_default, &nprocs);
     // number of processes in each dimension
-    int *dims = sdecomp_calloc((size_t)ndims, sizeof(int));
+    int *dims_ = sdecomp_calloc((size_t)ndims, sizeof(int));
+    // check decompose automatically or not
+    bool auto_decomp = true;
     for(int dim = 0; dim < ndims; dim++){
-      // force 1st dimension NOT decomposed (assign 1)
-      dims[dim] = dim == 0 ? 1 : 0;
+      // if at least one of dims[dim] is non-zero,
+      // user specifies how the domain should be decomposed
+      if(dims[dim] != 0){
+        auto_decomp = false;
+        break;
+      }
     }
-    MPI_Dims_create(nprocs, ndims, dims);
+    if(auto_decomp){
+      for(int dim = 0; dim < ndims; dim++){
+        // force 1st dimension NOT decomposed (assign 1)
+        dims_[dim] = dim == 0 ? 1 : 0;
+      }
+      MPI_Dims_create(nprocs, ndims, dims_);
+    }else{
+      memcpy(dims_, dims, (size_t)ndims * sizeof(int));
+    }
     // MPI rank in comm_default is not important for me
     const int reorder = 1;
     // create communicator
-    MPI_Cart_create(comm_default, ndims, dims, periods, reorder, &(sdecomp->comm_cart));
+    MPI_Cart_create(comm_default, ndims, dims_, periods, reorder, &(sdecomp->comm_cart));
     // clean-up heaps
-    sdecomp_free(dims);
+    sdecomp_free(dims_);
   }
   // for debug use
 #if defined(SDECOMP_DEBUG)

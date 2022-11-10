@@ -167,7 +167,7 @@ static sdecomp_transpose_t *sdecomp_transpose_init_2d(const sdecomp_t *sdecomp, 
     plan->sendtypes  = sendtypes;
     plan->recvtypes  = recvtypes;
     plan->pencil_bef = pencil;
-    plan->pencil_aft = (pencil+1) % 2;
+    plan->pencil_aft = (sdecomp_pencil_t)( ((int)pencil+1) % 2);
     plan->gsizes     = sdecomp_calloc(SDECOMP_SDECOMP_NDIMS, sizeof(int));
     for(int dim = 0; dim < SDECOMP_SDECOMP_NDIMS; dim++){
       plan->gsizes[dim] = gsizes[dim];
@@ -205,7 +205,7 @@ static sdecomp_transpose_t *sdecomp_transpose_fwrd_init_3d(const sdecomp_t *sdec
   // from z1 (2) pencil or z2 (5) pencil : (gsizes[2], gsizes[0], gsizes[1])
   // -> condition based on mod(pencil, 3)
   int sizes[SDECOMP_SDECOMP_NDIMS] = {0};
-  switch(pencil % 3){
+  switch((int)pencil % 3){
     case 0:
       {
         sizes[0] = gsizes[0];
@@ -249,7 +249,7 @@ static sdecomp_transpose_t *sdecomp_transpose_fwrd_init_3d(const sdecomp_t *sdec
     // from y2 (4) pencil : x is unchanged -> for x1pencil, z
     // from z2 (5) pencil : y is unchanged -> for x1pencil, y
     // -> unchanged dimension in x1pencil differs for odd and even pencils
-    const int unchanged_dim = pencil % 2 == 0 ? 2 : 1;
+    const int unchanged_dim = (int)pencil % 2 == 0 ? 2 : 1;
     int remain_dims[SDECOMP_SDECOMP_NDIMS] = {1, 1, 1};
     remain_dims[unchanged_dim] = 0;
     MPI_Cart_sub(comm_cart, remain_dims, &comm_2d);
@@ -379,7 +379,7 @@ static sdecomp_transpose_t *sdecomp_transpose_fwrd_init_3d(const sdecomp_t *sdec
     plan->sendtypes  = sendtypes;
     plan->recvtypes  = recvtypes;
     plan->pencil_bef = pencil;
-    plan->pencil_aft = (pencil+1) % 6;
+    plan->pencil_aft = (sdecomp_pencil_t)(((int)pencil+1) % 6);
     plan->gsizes     = sdecomp_calloc(SDECOMP_SDECOMP_NDIMS, sizeof(int));
     for(int dim = 0; dim < SDECOMP_SDECOMP_NDIMS; dim++){
       plan->gsizes[dim] = gsizes[dim];
@@ -417,7 +417,7 @@ static sdecomp_transpose_t *sdecomp_transpose_bwrd_init_3d(const sdecomp_t *sdec
   // from z1 (2) pencil or z2 (5) pencil : (gsizes[2], gsizes[0], gsizes[1])
   // -> condition based on mod(pencil, 3)
   int sizes[SDECOMP_SDECOMP_NDIMS] = {0};
-  switch(pencil % 3){
+  switch((int)pencil % 3){
     case 0:
       {
         sizes[0] = gsizes[0];
@@ -461,7 +461,7 @@ static sdecomp_transpose_t *sdecomp_transpose_bwrd_init_3d(const sdecomp_t *sdec
     // from y2 (4) pencil : x is unchanged -> for x1pencil, y
     // from z2 (5) pencil : z is unchanged -> for x1pencil, z
     // -> unchanged dimension in x1pencil differs for odd and even pencils
-    const int unchanged_dim = pencil % 2 == 0 ? 1 : 2;
+    const int unchanged_dim = (int)pencil % 2 == 0 ? 1 : 2;
     int remain_dims[SDECOMP_SDECOMP_NDIMS] = {1, 1, 1};
     remain_dims[unchanged_dim] = 0;
     MPI_Cart_sub(comm_cart, remain_dims, &comm_2d);
@@ -599,7 +599,7 @@ static sdecomp_transpose_t *sdecomp_transpose_bwrd_init_3d(const sdecomp_t *sdec
     plan->sendtypes  = sendtypes;
     plan->recvtypes  = recvtypes;
     plan->pencil_bef = pencil;
-    plan->pencil_aft = (pencil+5) % 6;
+    plan->pencil_aft = (sdecomp_pencil_t)(((int)pencil+5) % 6);
     plan->gsizes     = sdecomp_calloc(SDECOMP_SDECOMP_NDIMS, sizeof(int));
     for(int dim = 0; dim < SDECOMP_SDECOMP_NDIMS; dim++){
       plan->gsizes[dim] = gsizes[dim];
