@@ -14,7 +14,7 @@ jobs:
 
   test-small-2d:
     name: Test matrix transpose for a small-sized 2D domain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         nprocs: [1, 2, 3, 4, 5, 6, 7, 8]
@@ -37,7 +37,7 @@ jobs:
 
   test-middle-2d:
     name: Test matrix transpose for a middle-sized 2D domain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         nprocs: [1, 2, 3, 4, 5, 6, 8, 16]
@@ -60,7 +60,7 @@ jobs:
 
   test-large-2d:
     name: Test matrix transpose for a large-sized 2D domain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         nprocs: [1, 2, 4, 8, 16, 32, 64, 128]
@@ -83,7 +83,7 @@ jobs:
 
   test-small-3d:
     name: Test matrix transpose for a small-sized 3D domain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         nprocs: [1, 2, 3, 4, 5, 6, 7, 8]
@@ -106,7 +106,7 @@ jobs:
 
   test-middle-3d:
     name: Test matrix transpose for a middle-sized 3D domain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         nprocs: [1, 2, 3, 4, 5, 6, 8, 16]
@@ -129,7 +129,7 @@ jobs:
 
   test-large-3d:
     name: Test matrix transpose for a large-sized 3D domain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         nprocs: [1, 2, 4, 8, 16, 32, 64, 128]

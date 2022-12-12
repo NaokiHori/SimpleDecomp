@@ -15,7 +15,7 @@ jobs:
 
   draw-nopencil:
     name: Create PNG images using PyVista (nopencil.png)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         dimension: [2, 3]
@@ -43,7 +43,7 @@ jobs:
 
   draw-pencils-2d:
     name: Create PNG images using PyVista (2D pencils)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         pencil: ["x1", "y1"]
@@ -71,7 +71,7 @@ jobs:
 
   draw-pencils-3d:
     name: Create PNG images using PyVista (3D pencils)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         pencil: ["x1", "y1", "z1", "x2", "y2", "z2"]
@@ -99,7 +99,7 @@ jobs:
 
   merge-images-2d:
     name: Merge images (2D)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [draw-nopencil, draw-pencils-2d]
     steps:
       - name: Checkout repository
@@ -149,7 +149,7 @@ jobs:
 
   merge-images-3d:
     name: Merge images (3D)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [draw-nopencil, draw-pencils-3d]
     steps:
       - name: Checkout repository
@@ -225,7 +225,7 @@ jobs:
 
   build-doc:
     name: Build documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [merge-images-2d, merge-images-3d]
     steps:
       - name: Checkout repository
@@ -274,7 +274,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build-doc]
     steps:
       - name: Download HTML artifacts
