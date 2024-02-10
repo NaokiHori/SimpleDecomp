@@ -154,9 +154,7 @@ Please refer to `the documentation <https://naokihori.github.io/SimpleDecomp>`_ 
 Application
 ***********
 
-A simple and a stand-alone application to solve the Helmholtz equations can be found `here <https://github.com/NaokiHori/FastHelmholtzSolver>`_.
-
-Also, I use this library to solve the incompressible Navier-Stokes equations efficiently on clusters.
+I use this library to solve the incompressible Navier-Stokes equations efficiently on clusters.
 
 #. Finite-difference method:
 
