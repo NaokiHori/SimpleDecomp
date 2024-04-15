@@ -2,7 +2,7 @@
 Simple Decomp
 #############
 
-|CI|_ |Documentation|_
+|CI| |Documentation|
 
 .. |CI| image:: https://github.com/NaokiHori/SimpleDecomp/actions/workflows/ci.yml/badge.svg
 .. _CI: https://github.com/NaokiHori/SimpleDecomp/actions/workflows/ci.yml
@@ -10,7 +10,7 @@ Simple Decomp
 .. |Documentation| image:: https://github.com/NaokiHori/SimpleDecomp/actions/workflows/documentation.yml/badge.svg
 .. _Documentation: https://github.com/NaokiHori/SimpleDecomp/actions/workflows/documentation.yml
 
-|License|_ |LastCommit|_ |CodeFactor|_
+|License| |LastCommit| |CodeFactor|
 
 .. |License| image:: https://img.shields.io/github/license/NaokiHori/SimpleDecomp
 .. _License: https://opensource.org/license/MIT
@@ -158,13 +158,13 @@ I use this library to solve the incompressible Navier-Stokes equations efficient
 
 #. Finite-difference method:
 
-   .. image:: https://github.com/NaokiHori/NaokiHori/blob/card/card/SimpleNSSolver.svg
+   .. image:: https://raw.githubusercontent.com/NaokiHori/NaokiHori/main/assets/SimpleNSSolver.svg
       :target: https://github.com/NaokiHori/SimpleNSSolver
       :width: 50%
 
 #. Spectral method:
 
-   .. image:: https://github.com/NaokiHori/NaokiHori/blob/card/card/SpectralNSSolver1.svg
+   .. image:: https://raw.githubusercontent.com/NaokiHori/NaokiHori/main/assets/SpectralNSSolver1.svg
       :target: https://github.com/NaokiHori/SpectralNSSolver1
       :width: 50%
 
